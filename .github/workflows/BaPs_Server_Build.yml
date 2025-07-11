@@ -2,8 +2,8 @@ name: BaPs_Server_Build
 on:
   workflow_dispatch:
 
-  schedule:
-    - cron: '0 18 * * *'
+  repository_dispatch:
+    types: [BaPs-Push][BaData-Push]
 
 jobs:
   build:
