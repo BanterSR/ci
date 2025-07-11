@@ -1,0 +1,128 @@
+name: BaPs_Server_Build
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        target:
+          - darwin-amd64
+          - darwin-arm64
+          - windows-amd64
+          - windows-arm64
+          - linux-amd64
+          - linux-arm64
+          - linux-loong64
+          - linux-mips64
+          - linux-mips64le
+          - linux-ppc64
+          - linux-ppc64le
+          - linux-riscv64
+          - linux-s390x
+          - aix-ppc64
+          - dragonfly-amd64
+          - netbsd-amd64
+          - netbsd-arm64
+    name: Build
+    runs-on: ${{ matrix.platform }}
+    env:
+      TARGET: ${{ matrix.target }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        repository: BanterSR/BaPs-pr
+        ref: "main"
+        lfs: true
+        fetch-depth: 0
+        token: ${{ secrets.TOKEN }}
+
+    - uses: benjlevesque/short-sha@v3.0
+      id: short-sha
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: "1.23.2"
+        check-latest: true
+
+    - name: Build Proto
+      run: |
+          cd ./common/server_only
+          chmod 777 ./protoc ./protoc-gen-go
+          ./protoc --proto_path=. --plugin=protoc-gen-go=./protoc-gen-go --go_out=. *.proto
+
+    - name: Build
+      run: |
+        TARGET_SPLIT=(${TARGET//-/ })
+        GOOS=${TARGET_SPLIT[0]}
+        GOARCH=${TARGET_SPLIT[1]}
+        
+        OUTPUT_NAME="BaPs_"$GOOS"_"$GOARCH
+        if [ "$GOOS" = "windows" ]; then
+          OUTPUT_NAME="$OUTPUT_NAME.exe"
+        fi
+        
+        echo "Building for $GOOS-$GOARCH..."
+        GOOS=$GOOS GOARCH=$GOARCH \
+        go build -tags="lite" -ldflags="-s -w -X github.com/gucooing/BaPs/pkg.Commit=${{ env.SHA }}" -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
+
+#    - name: Upload artifact
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: BaPs_${{ env.SHA }}_${{ matrix.target }}
+#        path: bin/*
+
+  upload-data:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync BaPs
+        run: |
+          target_dir='./app/src'
+          rm -rf "$target_dir"
+          git clone --depth 1 --branch main \
+            "https://${{ secrets.TOKEN }}@github.com/BanterSR/BaPs-pr.git" \
+            "$target_dir"
+        shell: bash
+
+      - name: Sync BaData
+        run: |
+          target_dir='./app/baps/clientRes'
+          rm -rf "$target_dir"
+          git clone --depth 1 --branch main \
+            "https://${{ secrets.TOKEN }}@github.com/BanterSR/BaData.git" \
+            "$target_dir"
+        shell: bash
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.2"
+          check-latest: true
+
+      - name: Build Proto
+        run: |
+          cd ./app/src/common/server_only
+          chmod 777 ./protoc ./protoc-gen-go
+          ./protoc --proto_path=. --plugin=protoc-gen-go=./protoc-gen-go --go_out=. *.proto
+
+      - name: Build GenExcelBin
+        run: |
+          cd ./app/src
+          go build -ldflags="-s -w -X github.com/gucooing/BaPs/protocol/mx.Docker=1" -o ${{github.workspace}}/app/baps/main ./tools/GenResBin/main.go
+
+      - name: Run GenExcelBin
+        run: |
+          cd ./app/baps
+          mkdir -m 775 ./data
+          cp -r ${{github.workspace}}/app/src/data .
+          chmod 777 ./main && ./main
+
+#      - name: Upload data
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: data.zip
+#          path: ./app/baps/data/*
