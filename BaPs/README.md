@@ -80,7 +80,7 @@
 
 ## 🛠️ 使用方法
 
-1. 请问[唐人](https://github.com/gucooing/BaPs?tab=readme-ov-file#-%E5%90%8D%E4%BA%BA%E5%A0%82)处了解详情
+1. 前往[唐人](https://github.com/gucooing/BaPs?tab=readme-ov-file#-%E5%90%8D%E4%BA%BA%E5%A0%82)处了解详情
 2. 前往[Action BaPs_Server_Build](https://github.com/BanterSR/free/actions/workflows/BaPs_Server_Build.yml)下载最新的版本和`data.zip`文件
 3. 完全解压data.zip文件到运行目录
 4. 使用参数```-g true```运行一次将会自动生成config.json文件,打开并编辑config.json文件
