@@ -81,11 +81,12 @@
 ## 🛠️ 使用方法
 
 1. 前往[唐人](https://github.com/gucooing/BaPs?tab=readme-ov-file#-%E5%90%8D%E4%BA%BA%E5%A0%82)处了解详情
-2. 前往[Action BaPs_Server_Build](https://github.com/BanterSR/free/actions/workflows/BaPs_Server_Build.yml)下载最新的版本和`data.zip`文件
-3. 完全解压data.zip文件到运行目录
-4. 使用参数```-g true```运行一次将会自动生成config.json文件,打开并编辑config.json文件
-5. 需要注意的是部分设置你无法进行更改,这是Lite版本的限制
-6. 运行
+2. 如果你没看第一条那就回去看！！！别跳了！！！
+3. 前往[Action BaPs_Server_Build](https://github.com/BanterSR/free/actions/workflows/BaPs_Server_Build.yml)下载最新的版本和`data.zip`文件
+4. 完全解压data.zip文件到运行目录
+5. 使用参数```-g true```运行一次将会自动生成config.json文件,打开并编辑config.json文件
+6. 需要注意的是部分设置你无法进行更改,这是Lite版本的限制
+7. 运行
 
 ---
 
