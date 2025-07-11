@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
   repository_dispatch:
-    types: [BaPs-Push][BaData-Push]
+    types: [BaPs-Push,BaData-Push]
 
 jobs:
   build:
