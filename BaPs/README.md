@@ -141,7 +141,7 @@ https://yostar-serverinfo.bluearchiveyostar.com → http://127.0.0.1:5000
 ### ⛓️代理方案
 
 可前往以下docs查看
-- [Android_MitmProxy代理方案](Android_Mitmproxy_Readme_ZH.md)
+- [Android_MitmProxy代理方案](Android_Mitmproxy.md)
 
 ---
 
