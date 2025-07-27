@@ -1,9 +1,9 @@
-name: BaPs_Server_Build
+name: BaPs_Gl_Server_Build
 on:
   workflow_dispatch:
 
   repository_dispatch:
-    types: [BaPs-Push,BaData-Push]
+    types: [BaPs-Gl-Push,BaData-Push]
 
 jobs:
   build:
@@ -37,7 +37,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: BanterSR/BaPs-pr
-        ref: "main"
+        ref: "gl"
         lfs: true
         fetch-depth: 0
         token: ${{ secrets.TOKEN }}
@@ -70,7 +70,7 @@ jobs:
         GOOS=${TARGET_SPLIT[0]}
         GOARCH=${TARGET_SPLIT[1]}
         
-        OUTPUT_NAME="BaPs_lite_"$GOOS"_"$GOARCH
+        OUTPUT_NAME="BaPs_Gl_lite_"$GOOS"_"$GOARCH
         if [ "$GOOS" = "windows" ]; then
           OUTPUT_NAME="$OUTPUT_NAME.exe"
         fi
@@ -79,11 +79,11 @@ jobs:
         GOOS=$GOOS GOARCH=$GOARCH \
         go build -tags "lite" -ldflags="-s -w -X github.com/gucooing/BaPs/pkg.Commit=${{ steps.get-baps-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: BaPs_lite_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
-        path: bin/*
+#    - name: Upload artifact
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: BaPs_lite_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
+#        path: bin/*
 
   upload-data:
     needs: build
@@ -93,7 +93,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: BanterSR/BaPs-pr
-          ref: "main"
+          ref: "gl"
           path: ./app/src
           lfs: false
           fetch-depth: 0
@@ -135,8 +135,8 @@ jobs:
           cp -r ${{github.workspace}}/app/src/data .
           chmod 777 ./main && ./main
 
-      - name: Upload data
-        uses: actions/upload-artifact@v4
-        with:
-          name: data.zip
-          path: ./app/baps/data/*
+#      - name: Upload data
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: data.zip
+#          path: ./app/baps/data/*
