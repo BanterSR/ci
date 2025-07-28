@@ -147,8 +147,13 @@ https://yostar-serverinfo.bluearchiveyostar.com → http://127.0.0.1:5000
 
 ## ⌨️ GM工具
 
-1. 需要注意的是此GM已近乎不可用 [BlueArchiveGM](https://github.com/PrimeStudentCouncil/BlueArchiveGM/releases/latest);web版: [BlueArchiveGM Web](https://gm.bluearchive.cc)
+1. 推荐的GM [BlueArchiveGM](https://github.com/PrimeStudentCouncil/BlueArchiveGM/releases/latest);web版: [BlueArchiveGM Web](https://gm.bluearchive.cc)
 2. 我们欢迎更多开发者开发适用于BaPs的GM
+
+---
+
+## 进阶操作
+1. BaPs支持第三方sdk登录，仅需适配VerifyTokenUrl即可接入任意的sdk
 
 ---
 ## 🤝 参与贡献
