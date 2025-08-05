@@ -70,7 +70,7 @@ jobs:
         
         echo "Building for $GOOS-$GOARCH..."
         GOOS=$GOOS GOARCH=$GOARCH \
-        go build -tags "lite" -ldflags="-s -w -X github.com/gucooing/BaPs/pkg.Commit=${{ steps.get-baps-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
+        go build -tags "nolite" -ldflags="-s -w -X github.com/gucooing/BaPs/pkg.Commit=${{ steps.get-baps-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
