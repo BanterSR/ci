@@ -140,7 +140,8 @@ https://yostar-serverinfo.bluearchiveyostar.com → http://127.0.0.1:5000
 ### ⛓️代理方案
 
 可前往以下docs查看
-- [Android_MitmProxy代理方案](Android_Mitmproxy.md)
+- Root方案[Android_MitmProxy代理方案](Android_Mitmproxy.md)
+- 免Root方案,不适用于模拟器[AnimeGamesProxy](https://github.com/Xuoos/AnimeGamesProxy/releases)
 
 ---
 

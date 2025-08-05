@@ -63,7 +63,7 @@ jobs:
         GOOS=${TARGET_SPLIT[0]}
         GOARCH=${TARGET_SPLIT[1]}
         
-        OUTPUT_NAME="BaPs_lite_"$GOOS"_"$GOARCH
+        OUTPUT_NAME="BaPs_nolite_"$GOOS"_"$GOARCH
         if [ "$GOOS" = "windows" ]; then
           OUTPUT_NAME="$OUTPUT_NAME.exe"
         fi
