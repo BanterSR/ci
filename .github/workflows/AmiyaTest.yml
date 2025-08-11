@@ -61,8 +61,12 @@ jobs:
           fetch-depth: '1'
           token: ${{ secrets.TOKEN }}
 
-      - uses: benjlevesque/short-sha@v3.0
-        id: short-sha
+      - name: Get SHA
+        id: get-sha
+        run: |
+          SHA=$(git rev-parse --short HEAD)
+          echo "BanterSR/Amiya SHA: $SHA"
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
 
       - name: Set Go
         uses: actions/setup-go@v5
@@ -83,12 +87,12 @@ jobs:
 
           echo "Building for $GOOS-$GOARCH..."
           GOOS=$GOOS GOARCH=$GOARCH \
-          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ env.SHA }}" -o ./bin/$OUTPUT_NAME ./cmd/Amiya/main.go
+          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ steps.get-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/Amiya/main.go
 
 #      - name: Upload Amiya
 #        uses: actions/upload-artifact@v4
 #        with:
-#          name: Amiya_${{ env.SHA }}_${{ matrix.target }}
+#          name: Amiya_${{ steps.get-sha.outputs.sha }}_${{ matrix.target }}
 #          path: bin/*
 
   build_amiya_sdk:
@@ -122,8 +126,12 @@ jobs:
           fetch-depth: '1'
           token: ${{ secrets.TOKEN }}
 
-      - uses: benjlevesque/short-sha@v3.0
-        id: short-sha
+      - name: Get SHA
+        id: get-sha
+        run: |
+          SHA=$(git rev-parse --short HEAD)
+          echo "BanterSR/Amiya SHA: $SHA"
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
 
       - name: Set Go
         uses: actions/setup-go@v5
@@ -144,12 +152,12 @@ jobs:
 
           echo "Building for $GOOS-$GOARCH..."
           GOOS=$GOOS GOARCH=$GOARCH \
-          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ env.SHA }}" -o ./bin/$OUTPUT_NAME ./cmd/Sdk/main.go
+          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ steps.get-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/Sdk/main.go
 
       - name: Upload Amiya_Sdk
         uses: actions/upload-artifact@v4
         with:
-          name: Amiya_Sdk_${{ env.SHA }}_${{ matrix.target }}
+          name: Amiya_Sdk_${{ steps.get-sha.outputs.sha }}_${{ matrix.target }}
           path: bin/*
 
   upload_data:
