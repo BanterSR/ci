@@ -83,12 +83,12 @@ jobs:
 
           echo "Building for $GOOS-$GOARCH..."
           GOOS=$GOOS GOARCH=$GOARCH \
-          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ steps.get-baps-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/Amiya/main.go
+          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ env.SHA }}" -o ./bin/$OUTPUT_NAME ./cmd/Amiya/main.go
 
 #      - name: Upload Amiya
 #        uses: actions/upload-artifact@v4
 #        with:
-#          name: Amiya_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
+#          name: Amiya_${{ env.SHA }}_${{ matrix.target }}
 #          path: bin/*
 
   build_amiya_sdk:
@@ -144,12 +144,12 @@ jobs:
 
           echo "Building for $GOOS-$GOARCH..."
           GOOS=$GOOS GOARCH=$GOARCH \
-          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ steps.get-baps-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/Sdk/main.go
+          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ env.SHA }}" -o ./bin/$OUTPUT_NAME ./cmd/Sdk/main.go
 
       - name: Upload Amiya_Sdk
         uses: actions/upload-artifact@v4
         with:
-          name: Amiya_Sdk_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
+          name: Amiya_Sdk_${{ env.SHA }}_${{ matrix.target }}
           path: bin/*
 
   upload_data:
