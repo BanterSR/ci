@@ -29,7 +29,7 @@ jobs:
         run: |
           go test ./db -v -bench=BenchmarkSdkDB
 
-  build:
+  build_amiya:
     needs:
       - test
     strategy:
@@ -72,7 +72,7 @@ jobs:
           GOOS=${TARGET_SPLIT[0]}
           GOARCH=${TARGET_SPLIT[1]}
 
-          OUTPUT_NAME="Amiya__"$GOOS"_"$GOARCH
+          OUTPUT_NAME="Amiya_"$GOOS"_"$GOARCH
           if [ "$GOOS" = "windows" ]; then
             OUTPUT_NAME="$OUTPUT_NAME.exe"
           fi
@@ -86,3 +86,82 @@ jobs:
 #        with:
 #          name: Amiya_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
 #          path: bin/*
+
+  build_amiya_sdk:
+    needs:
+      - test
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest ]
+        target:
+          - windows-amd64
+          - windows-arm64
+          - linux-amd64
+          - linux-arm64
+          - darwin-amd64
+          - darwin-arm64
+          - linux-ppc64le
+          - linux-riscv64
+          - linux-s390x
+          - netbsd-amd64
+
+    name: Build
+    runs-on: ${{ matrix.platform }}
+    env:
+      TARGET: ${{ matrix.target }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: BanterSR/Amiya
+          ref: "main"
+          fetch-depth: '1'
+          token: ${{ secrets.TOKEN }}
+
+      - name: Set Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.4"
+          check-latest: true
+
+      - name: Build
+        run: |
+          TARGET_SPLIT=(${TARGET//-/ })
+          GOOS=${TARGET_SPLIT[0]}
+          GOARCH=${TARGET_SPLIT[1]}
+
+          OUTPUT_NAME="Amiya_Sdk_"$GOOS"_"$GOARCH
+          if [ "$GOOS" = "windows" ]; then
+            OUTPUT_NAME="$OUTPUT_NAME.exe"
+          fi
+
+          echo "Building for $GOOS-$GOARCH..."
+          GOOS=$GOOS GOARCH=$GOARCH \
+          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ steps.get-baps-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/Sdk/main.go
+
+      - name: Upload Amiya_Sdk
+        uses: actions/upload-artifact@v4
+        with:
+          name: Amiya_Sdk_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
+          path: bin/*
+
+  upload_data:
+    needs:
+      - test
+      - build_amiya
+      - build_amiya_sdk
+    runs-on: ubuntu-latest
+    steps:
+      - name: SyncAmiya
+        uses: actions/checkout@v4
+        with:
+          repository: BanterSR/Amiya
+          ref: "main"
+          fetch-depth: '1'
+          token: ${{ secrets.TOKEN }}
+
+      - name: Upload data
+        uses: actions/upload-artifact@v4
+        with:
+          name: data
+          path: data/*
