@@ -79,8 +79,8 @@ jobs:
           GOOS=$GOOS GOARCH=$GOARCH \
           go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ steps.get-baps-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/Amiya/main.go
 
-      - name: Upload Amiya
-        uses: actions/upload-artifact@v4
-        with:
-          name: Amiya_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
-          path: bin/*
+#      - name: Upload Amiya
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: Amiya_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
+#          path: bin/*
