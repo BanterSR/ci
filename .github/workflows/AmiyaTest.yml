@@ -61,6 +61,9 @@ jobs:
           fetch-depth: '1'
           token: ${{ secrets.TOKEN }}
 
+      - uses: benjlevesque/short-sha@v3.0
+        id: short-sha
+
       - name: Set Go
         uses: actions/setup-go@v5
         with:
@@ -118,6 +121,9 @@ jobs:
           ref: "main"
           fetch-depth: '1'
           token: ${{ secrets.TOKEN }}
+
+      - uses: benjlevesque/short-sha@v3.0
+        id: short-sha
 
       - name: Set Go
         uses: actions/setup-go@v5
