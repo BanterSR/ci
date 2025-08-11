@@ -5,6 +5,7 @@ on:
 
 jobs:
   test:
+    name: AmiyaTest
     runs-on: ubuntu-latest
     steps:
       - name: SyncAmiya
@@ -30,6 +31,7 @@ jobs:
           go test ./db -v -bench=BenchmarkSdkDB
 
   build_amiya:
+    name: BuildAmiya
     needs:
       - test
     strategy:
@@ -47,7 +49,6 @@ jobs:
           - linux-s390x
           - netbsd-amd64
 
-    name: Build
     runs-on: ${{ matrix.platform }}
     env:
       TARGET: ${{ matrix.target }}
@@ -88,6 +89,7 @@ jobs:
 #          path: bin/*
 
   build_amiya_sdk:
+    name: BuildAmiyaSdk
     needs:
       - test
     strategy:
@@ -105,7 +107,6 @@ jobs:
           - linux-s390x
           - netbsd-amd64
 
-    name: Build
     runs-on: ${{ matrix.platform }}
     env:
       TARGET: ${{ matrix.target }}
@@ -146,6 +147,7 @@ jobs:
           path: bin/*
 
   upload_data:
+    name: UploadData
     needs:
       - test
       - build_amiya
