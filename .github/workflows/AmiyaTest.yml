@@ -30,6 +30,8 @@ jobs:
           go test ./db -v -bench=BenchmarkSdkDB
 
   build:
+    needs:
+      - test
     strategy:
       matrix:
         platform: [ ubuntu-latest ]
