@@ -160,12 +160,78 @@ jobs:
           name: Amiya_Sdk_${{ steps.get-sha.outputs.sha }}_${{ matrix.target }}
           path: bin/*
 
+  build_amiya_game:
+    name: BuildAmiyaGame
+    needs:
+      - test
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest ]
+        target:
+          - windows-amd64
+          - windows-arm64
+          - linux-amd64
+          - linux-arm64
+          - darwin-amd64
+          - darwin-arm64
+          - linux-ppc64le
+          - linux-riscv64
+          - linux-s390x
+          - netbsd-amd64
+
+    runs-on: ${{ matrix.platform }}
+    env:
+      TARGET: ${{ matrix.target }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: BanterSR/Amiya
+          ref: "main"
+          fetch-depth: '1'
+          token: ${{ secrets.TOKEN }}
+
+      - name: Get SHA
+        id: get-sha
+        run: |
+          SHA=$(git rev-parse --short HEAD)
+          echo "BanterSR/Amiya SHA: $SHA"
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+
+      - name: Set Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.4"
+          check-latest: true
+
+      - name: Build
+        run: |
+          TARGET_SPLIT=(${TARGET//-/ })
+          GOOS=${TARGET_SPLIT[0]}
+          GOARCH=${TARGET_SPLIT[1]}
+
+          OUTPUT_NAME="Amiya_Game_"$GOOS"_"$GOARCH
+          if [ "$GOOS" = "windows" ]; then
+            OUTPUT_NAME="$OUTPUT_NAME.exe"
+          fi
+
+          echo "Building for $GOOS-$GOARCH..."
+          GOOS=$GOOS GOARCH=$GOARCH \
+          go build -ldflags="-s -w -X gucooing/Amiya/pkg.Commit=${{ steps.get-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/Game/main.go
+
+#      - name: Upload Amiya_Game
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: Amiya_Game_${{ steps.get-sha.outputs.sha }}_${{ matrix.target }}
+#          path: bin/*
+
   upload_data:
     name: UploadData
     needs:
       - test
       - build_amiya
       - build_amiya_sdk
+      - build_amiya_game
     runs-on: ubuntu-latest
     steps:
       - name: SyncAmiya
