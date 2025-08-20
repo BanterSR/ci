@@ -72,11 +72,11 @@ jobs:
         GOOS=$GOOS GOARCH=$GOARCH \
         go build -tags "nolite" -ldflags="-s -w -X github.com/gucooing/BaPs/pkg.Commit=${{ steps.get-baps-sha.outputs.sha }}" -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: BaPs_lite_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
-        path: bin/*
+#    - name: Upload artifact
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: BaPs_lite_${{ steps.get-baps-sha.outputs.sha }}_${{ matrix.target }}
+#        path: bin/*
 
   upload-data:
     needs: build
@@ -128,8 +128,8 @@ jobs:
           cp -r ${{github.workspace}}/app/src/data .
           chmod 777 ./main && ./main
 
-      - name: Upload data
-        uses: actions/upload-artifact@v4
-        with:
-          name: data.zip
-          path: ./app/baps/data/*
+#      - name: Upload data
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: data.zip
+#          path: ./app/baps/data/*
