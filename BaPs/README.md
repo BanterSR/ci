@@ -134,6 +134,7 @@
 转代以下地址:其中 http://127.0.0.1:5000 为服务器地址
 ```plaintext
 https://ba-jp-sdk.bluearchive.jp  →  http://127.0.0.1:5000
+https://jp-sdk-api.yostarplat.com  →  http://127.0.0.1:5000
 https://yostar-serverinfo.bluearchiveyostar.com → http://127.0.0.1:5000
 ```
 
@@ -159,13 +160,14 @@ HTTP POST /gucooing/verify_token/ba
 
 REQ JSON :  由服务器发起
 {
-  Uid int64 // 登录的uid
+  uid int64 // sdk生成的uid
+  token string // sdk生成的token
 }
 
 RSP JSON ： 由验证服务回复
 {
-  Uid             int64 // 登录的uid
-  YostarAuthToken string // 此值应与 /user/login 递交给客户端的AccessToken一致
+  result    int64 // 结果 为0时表示成功
+  uid       int64 // sdk生成的uid
 }
 
 不回复，空回复，假回复等情况皆判定为验证失败
@@ -181,7 +183,7 @@ RSP JSON ： 由验证服务回复
 ---
 
 ## ⚠️ 注意事项
-1. 由于版权原因，dev使用的resources我们不会公开
+1. 由于版权原因，resources我们不会公开
 2. 由于唐人原因，全部源代码将不会被公开，但我们可以保证非公开部分代码无任何恶意内容（在你遵守我们使用协议的情况下）
 3. 玩家数据并不会实时保存到数据库中,如果有最新数据的需求,可通过api进行访问玩家数据
 4. 该项目不支持,也不会适配32位系统
