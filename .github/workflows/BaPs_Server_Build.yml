@@ -128,8 +128,8 @@ jobs:
           cp -r ${{github.workspace}}/app/src/data .
           chmod 777 ./main && ./main
 
-      - name: Upload data
-        uses: actions/upload-artifact@v4
-        with:
-          name: data.zip
-          path: ./app/baps/data/*
+#      - name: Upload data
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: data.zip
+#          path: ./app/baps/data/*

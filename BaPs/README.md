@@ -1,6 +1,6 @@
 ![introduce](https://socialify.git.ci/gucooing/BaPs/image?description=1&font=Source+Code+Pro&forks=1&issues=1&language=1&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Light)
 
-# BaPs-Lite 🎮
+# BaPs-Lite 完全必源的某游戏服务端实现 🎮
 
 #### [English](README_EN.md)
 
@@ -70,8 +70,8 @@
 
 ## 重要内容！！！！！！
 
-1. Lite版只能在内网环境下运行且移除了大部分功能 (目前仍在考虑是否进一步锁紧功能)
-2. Lite版的api没有密码且内置了远程shell便于调试,所以如果你违反使用协议在公网环境下运行造成的后果自行承担
+~~1. Lite版只能在内网环境下运行且移除了大部分功能 (目前仍在考虑是否进一步锁紧功能)
+2. Lite版的api没有密码且内置了远程shell便于调试,所以如果你违反使用协议在公网环境下运行造成的后果自行承担~~
 3. 没有遵守我们使用协议的任何行为所造成的后果皆自行承担与我们组织和开发者无任何关系
 4. 一旦下载了BaPs的任何文件都代表您同意了使用协议
 5. 仅供学习用途，严禁用于商业用途，请于24小时内删除！！！
