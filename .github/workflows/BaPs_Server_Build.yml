@@ -132,7 +132,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: BaPs_lite_${{ BAPS_SHA }}_${{ BADATA_SHA }}_${{ TARGET }}
+        name: BaPs_lite_${{ needs.setenv.outputs.baps_sha }}_${{ needs.setenv.outputs.badata_sha }}_${{ TARGET }}
         path: bin/*
 
   build-doker:
@@ -195,8 +195,8 @@ jobs:
           context: ./app/src
           file: ./app/src/Dockerfile
           build-args: |
-            BAPS_SHA=${{ BAPS_SHA }}
-            BADATA_SHA=${{ BADATA_SHA }}
+            BAPS_SHA=${{ needs.setenv.outputs.baps_sha }}
+            BADATA_SHA=${{ needs.setenv.outputs.badata_sha }}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/bantersr/baps-pr:latest
