@@ -205,6 +205,7 @@ jobs:
     needs:
       - build
       - build-doker
+      - setenv
     runs-on: ubuntu-latest
     env:
       BAPS_SHA: ${{ needs.setenv.outputs.baps_sha }}
