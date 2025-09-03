@@ -107,7 +107,6 @@ jobs:
     - name: Build Proto
       run: |
           cd ./common/server_only
-          chmod 777 protoc ./protoc-gen-go
           protoc --proto_path=. --plugin=protoc-gen-go --go_out=. *.proto
 
     - name: Build
@@ -177,7 +176,6 @@ jobs:
       - name: Build Proto
         run: |
           cd ./app/src/common/server_only
-          chmod 777 protoc ./protoc-gen-go
           protoc --proto_path=. --plugin=protoc-gen-go --go_out=. *.proto
 
       - name: github docker login
@@ -256,7 +254,6 @@ jobs:
       - name: Build Proto
         run: |
           cd ./app/src/common/server_only
-          chmod 777 protoc ./protoc-gen-go
           protoc --proto_path=. --plugin=protoc-gen-go --go_out=. *.proto
 
       - name: Build GenExcelBin
