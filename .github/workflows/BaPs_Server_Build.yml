@@ -261,7 +261,6 @@ jobs:
           cd ./app/src
           go build \
             -ldflags="-s -w \
-            -X github.com/gucooing/BaPs/protocol/mx.Docker=1" \
             -X github.com/gucooing/BaPs/pkg.Commit=$BAPS_SHA \
             -X github.com/gucooing/BaPs/pkg.BaDataCommit=$BADATA_SHA" \
             -o ${{github.workspace}}/app/baps/main \
