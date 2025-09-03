@@ -132,7 +132,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: BaPs_lite_${{ needs.setenv.outputs.baps_sha }}_${{ needs.setenv.outputs.badata_sha }}_${{ TARGET }}
+        name: BaPs_lite_${{ needs.setenv.outputs.baps_sha }}_${{ needs.setenv.outputs.badata_sha }}_${{ matrix.target }}
         path: bin/*
 
   build-doker:
