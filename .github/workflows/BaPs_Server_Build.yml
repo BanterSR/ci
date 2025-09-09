@@ -124,7 +124,7 @@ jobs:
         GOOS=$GOOS GOARCH=$GOARCH \
         go build -tags "lite" \
           -ldflags="-s -w \
-          -X github.com/gucooing/BaPs/pkg.Commit=$BAPS_SHA \
+          -X github.com/gucooing/BaPs/pkg.BaPsCommit=$BAPS_SHA \
           -X github.com/gucooing/BaPs/pkg.BaDataCommit=$BADATA_SHA" \
           -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
 
@@ -261,7 +261,7 @@ jobs:
           cd ./app/src
           go build \
             -ldflags="-s -w \
-            -X github.com/gucooing/BaPs/pkg.Commit=$BAPS_SHA \
+            -X github.com/gucooing/BaPs/pkg.BaPsCommit=$BAPS_SHA \
             -X github.com/gucooing/BaPs/pkg.BaDataCommit=$BADATA_SHA" \
             -o ${{github.workspace}}/app/baps/main \
             ./tools/GenResBin/main.go
