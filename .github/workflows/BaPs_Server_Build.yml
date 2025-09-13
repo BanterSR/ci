@@ -64,7 +64,6 @@ jobs:
           - linux-ppc64le
           - linux-riscv64
           - linux-s390x
-          - netbsd-amd64
     name: Build
     runs-on: ${{ matrix.platform }}
     env:
