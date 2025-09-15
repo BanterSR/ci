@@ -1,9 +1,9 @@
-name: BaPs_Gl_Server_Build
+name: BaPs-pr_Gl_Server_Build
 on:
   workflow_dispatch:
 
   repository_dispatch:
-    types: [BaPs-Gl-Push,BaData-Push]
+    types: [BaPs-pr-Gl-Push,BaData-Push]
 
 jobs:
   build:

@@ -1,9 +1,9 @@
-name: BaPs_Server_Build
+name: BaPs-pr_Jp_Server_Build
 on:
   workflow_dispatch:
 
   repository_dispatch:
-    types: [BaPs-Push,BaData-Push]
+    types: [BaPs-pr-Jp-Push,BaData-Push]
 
 jobs:
   setenv:
@@ -114,7 +114,7 @@ jobs:
         GOOS=${TARGET_SPLIT[0]}
         GOARCH=${TARGET_SPLIT[1]}
         
-        OUTPUT_NAME="BaPs_lite_"$GOOS"_"$GOARCH
+        OUTPUT_NAME="BaPs-pr_lite_"$GOOS"_"$GOARCH
         if [ "$GOOS" = "windows" ]; then
           OUTPUT_NAME="$OUTPUT_NAME.exe"
         fi
@@ -130,7 +130,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: BaPs_lite_${{ needs.setenv.outputs.baps_sha }}_${{ needs.setenv.outputs.badata_sha }}_${{ matrix.target }}
+        name: BaPs-pr_lite_${{ needs.setenv.outputs.baps_sha }}_${{ needs.setenv.outputs.badata_sha }}_${{ matrix.target }}
         path: bin/*
 
   build-doker:

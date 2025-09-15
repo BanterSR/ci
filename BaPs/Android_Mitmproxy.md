@@ -66,6 +66,7 @@ redirects = {
     "https://ba-jp-sdk.bluearchive.jp": "http://127.0.0.1:5000",
     "https://jp-sdk-api.yostarplat.com": "http://127.0.0.1:5000",
     "https://yostar-serverinfo.bluearchiveyostar.com": "http://127.0.0.1:5000",
+    "https://m-api.nexon.com": "http://127.0.0.1:5000",
 }
 
 def request(flow: http.HTTPFlow) -> None:
