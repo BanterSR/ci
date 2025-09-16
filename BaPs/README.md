@@ -1,6 +1,6 @@
 ![introduce](https://socialify.git.ci/gucooing/BaPs/image?description=1&font=Source+Code+Pro&forks=1&issues=1&language=1&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Light)
 
-# BaPs-Lite 完全必源的某游戏服务端实现 🎮
+# BaPs-Lite 完全闭源的某游戏服务端实现 🎮
 
 #### [English](README_EN.md)
 
