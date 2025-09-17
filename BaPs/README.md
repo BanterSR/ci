@@ -141,9 +141,9 @@
       "DbType": "sqlite", // 使用的数据库类型,支持sqlite和mysql
       "Dsn":    "./sqlite/Game.db" // 数据库地址,如果是mysql请填写mysql url
     },
-    "FriendDb": {
+    "CafeDb": {
       "DbType": "sqlite", // 使用的数据库类型,支持sqlite和mysql
-      "Dsn":    "./sqlite/Friend.db" // 数据库地址,如果是mysql请填写mysql url
+      "Dsn":    "./sqlite/Cafe.db" // 数据库地址,如果是mysql请填写mysql url
     },
     "RankDb": {
       "DbType": "sqlite", // 使用的数据库类型,支持sqlite和mysql
