@@ -49,6 +49,13 @@ jobs:
         echo "BanterSR/BaData SHA: $SHA"
         echo "sha=$SHA" >> $GITHUB_OUTPUT
 
+    - name: Upload bin.server.proto
+      uses: actions/upload-artifact@v4
+      with:
+        name: bin.server.proto
+        path: ./app/baps/common/server_only/bin.server.proto
+        compression-level: 0
+
   build:
     needs: setenv
     strategy:
