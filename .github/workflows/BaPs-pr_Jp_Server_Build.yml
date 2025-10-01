@@ -49,15 +49,97 @@ jobs:
         echo "BanterSR/BaData SHA: $SHA"
         echo "sha=$SHA" >> $GITHUB_OUTPUT
 
-    - name: Upload bin.server.proto
+    - name: Upload proto
       uses: actions/upload-artifact@v4
       with:
-        name: bin.server.proto
-        path: ./app/src/common/server_only/bin.server.proto
+        name: proto
+        path: |
+          ./app/src/common/server_only/bin.server.proto
+          ./app/src/common/server_only/enum.server.proto
         compression-level: 0
 
+  upload-data:
+    needs:
+      - setenv
+    runs-on: ubuntu-latest
+    env:
+      BAPS_SHA: ${{ needs.setenv.outputs.baps_sha }}
+      BADATA_SHA: ${{ needs.setenv.outputs.badata_sha }}
+    steps:
+      - name: Sync BaPs
+        uses: actions/checkout@v4
+        with:
+          repository: BanterSR/BaPs-pr
+          ref: "main"
+          path: ./app/src
+          lfs: false
+          fetch-depth: 0
+          clean: true
+          token: ${{ secrets.TOKEN }}
+
+      - name: Sync BaData
+        uses: actions/checkout@v4
+        with:
+          repository: BanterSR/BaData
+          ref: "main"
+          path: ./app/baps/clientRes
+          lfs: false
+          fetch-depth: 0
+          clean: true
+          token: ${{ secrets.TOKEN }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.1"
+          check-latest: true
+
+      - name: Install protoc and protoc-gen-go
+        run: |
+          PROTOC_VERSION=32.0
+          curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
+          sudo unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /usr/local
+          sudo chmod +x /usr/local/bin/protoc
+          rm protoc-${PROTOC_VERSION}-linux-x86_64.zip
+
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          sudo mv $(go env GOPATH)/bin/protoc-gen-go /usr/local/bin/
+
+          protoc --version
+          protoc-gen-go --version
+
+      - name: Build Proto
+        run: |
+          cd ./app/src/common/server_only
+          protoc --proto_path=. --go_out=. *.proto
+
+      - name: Build GenExcelBin
+        run: |
+          cd ./app/src
+          go build \
+            -ldflags="-s -w \
+            -X github.com/gucooing/BaPs/pkg.BaPsCommit=$BAPS_SHA \
+            -X github.com/gucooing/BaPs/pkg.BaDataCommit=$BADATA_SHA" \
+            -o ${{github.workspace}}/app/baps/main \
+            ./tools/GenResBin/main.go
+
+      - name: Run GenExcelBin
+        run: |
+          cd ./app/baps
+          mkdir -m 775 ./data
+          cp -r ${{github.workspace}}/app/src/data .
+          chmod 777 ./main && ./main
+
+      - name: Upload data
+        uses: actions/upload-artifact@v4
+        with:
+          name: data.zip
+          path: ./app/baps/data/*
+
   build:
-    needs: setenv
+    needs:
+     - setenv
+     - upload-data
     strategy:
       matrix:
         platform: [ubuntu-latest]
@@ -141,7 +223,9 @@ jobs:
         path: bin/*
 
   build-doker:
-    needs: setenv
+    needs:
+     - setenv
+     - upload-data
     name: BuildDockerImg
     env:
       BAPS_SHA: ${{ needs.setenv.outputs.baps_sha }}
@@ -204,83 +288,3 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/bantersr/baps-pr:latest
-
-  upload-data:
-    needs:
-      - build
-      - build-doker
-      - setenv
-    runs-on: ubuntu-latest
-    env:
-      BAPS_SHA: ${{ needs.setenv.outputs.baps_sha }}
-      BADATA_SHA: ${{ needs.setenv.outputs.badata_sha }}
-    steps:
-      - name: Sync BaPs
-        uses: actions/checkout@v4
-        with:
-          repository: BanterSR/BaPs-pr
-          ref: "main"
-          path: ./app/src
-          lfs: false
-          fetch-depth: 0
-          clean: true
-          token: ${{ secrets.TOKEN }}
-
-      - name: Sync BaData
-        uses: actions/checkout@v4
-        with:
-          repository: BanterSR/BaData
-          ref: "main"
-          path: ./app/baps/clientRes
-          lfs: false
-          fetch-depth: 0
-          clean: true
-          token: ${{ secrets.TOKEN }}
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.25.1"
-          check-latest: true
-
-      - name: Install protoc and protoc-gen-go
-        run: |
-          PROTOC_VERSION=32.0
-          curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
-          sudo unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /usr/local
-          sudo chmod +x /usr/local/bin/protoc
-          rm protoc-${PROTOC_VERSION}-linux-x86_64.zip
-
-          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-          sudo mv $(go env GOPATH)/bin/protoc-gen-go /usr/local/bin/
-
-          protoc --version
-          protoc-gen-go --version
-
-      - name: Build Proto
-        run: |
-          cd ./app/src/common/server_only
-          protoc --proto_path=. --go_out=. *.proto
-
-      - name: Build GenExcelBin
-        run: |
-          cd ./app/src
-          go build \
-            -ldflags="-s -w \
-            -X github.com/gucooing/BaPs/pkg.BaPsCommit=$BAPS_SHA \
-            -X github.com/gucooing/BaPs/pkg.BaDataCommit=$BADATA_SHA" \
-            -o ${{github.workspace}}/app/baps/main \
-            ./tools/GenResBin/main.go
-
-      - name: Run GenExcelBin
-        run: |
-          cd ./app/baps
-          mkdir -m 775 ./data
-          cp -r ${{github.workspace}}/app/src/data .
-          chmod 777 ./main && ./main
-
-      - name: Upload data
-        uses: actions/upload-artifact@v4
-        with:
-          name: data.zip
-          path: ./app/baps/data/*
