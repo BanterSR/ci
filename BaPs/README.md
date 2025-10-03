@@ -77,6 +77,7 @@
 4. 一旦下载了BaPs-pr的任何文件都代表您同意了使用协议
 5. 仅供学习用途，严禁用于商业用途，请于24小时内删除！！！
 6. 如若此项目侵犯了您的权益可联系删除
+7. 如遇问题可前往[Discord](https://img.shields.io/badge/Join-Discord-blue?logo=discord&logoSize=auto)反馈
 
 ## 🛠️ 使用方法
 
@@ -86,9 +87,11 @@
 4. 下载服务端:[日服](https://github.com/BanterSR/free/actions/workflows/BaPs-pr_Jp_Server_Build.yml) | [国际服](https://github.com/BanterSR/free/actions/workflows/BaPs-pr_Gl_Server_Build.yml) 请按目标客户端和目标系统下载最新服务端和`data.zip`文件
 5. 完全解压data.zip文件到运行目录
 6. 将在Discord频道中申请的card.gex文件放到data目录中
-7. 使用参数```-g true```运行一次将会自动生成config.json文件,打开并编辑config.json文件
+7. 使用参数```-g```运行一次将会自动生成config.json文件,打开并编辑config.json文件
 8. 需要注意的是部分设置你无法进行更改,这是Lite版本的限制
 9. 运行
+10. 日服使用验证码登录，国际服选择nexon账户密码登录(第一次登录为注册账户，请牢记第一次登录的密码)
+11. 暂不支持steam渠道(如果你有代理方法可通过关闭GateWay的VerifyToken使用)
 
 ---
 
@@ -111,7 +114,7 @@
   "Resources": {
     "DataPath": "./data" // data目录
   },
-  "OtherAddr": {
+  "OtherAddr": { // 国际服无此内容
     "ServerInfoUrl": "https://yostar-serverinfo.bluearchiveyostar.com", // 上游服务器信息地址
     "ManagementDataUrl": "https://prod-noticeindex.bluearchiveyostar.com/prod/index.json", // 上游公告地址
   },
@@ -148,6 +151,10 @@
     "RankDb": {
       "DbType": "sqlite", // 使用的数据库类型,支持sqlite和mysql
       "Dsn":    "./sqlite/Rank.db" // 数据库地址,如果是mysql请填写mysql url
+    },
+    "ArenaDb": {
+      "dbType": "sqlite",
+      "dsn": "./sqlite/Arena.db"
     },
     "Irc": { // 可使用通用irc服务器
       "HostAddress": "127.0.0.1", // 社团聊天服务器irc地址
@@ -190,7 +197,7 @@ https://nxm-global-bagl.nexon.com:5100 -> http://127.0.0.1:5000
 
 ## ⌨️ GM工具
 
-1. 推荐的GM [BlueArchiveGM](https://github.com/PrimeStudentCouncil/BlueArchiveGM/releases/latest);web版: [BlueArchiveGM Web](https://gm.bluearchive.cc)
+1. 推荐的GM 仅用于日服:[BlueArchiveGM](https://github.com/PrimeStudentCouncil/BlueArchiveGM/releases/latest);web版: [BlueArchiveGM Web](https://gm.bluearchive.cc)
 2. 我们欢迎更多开发者开发适用于BaPs的GM
 
 ---
@@ -202,14 +209,14 @@ HTTP POST /gucooing/verify_token/ba
 
 REQ JSON :  由服务器发起
 {
-  uid int64 // sdk生成的uid
+  uid int64 // sdk生成的uid/npsn
   token string // sdk生成的token
 }
 
 RSP JSON ： 由验证服务回复
 {
   result    int64 // 结果 为0时表示成功
-  uid       int64 // sdk生成的uid
+  uid       int64 // sdk生成的uid/npsn
 }
 
 不回复，空回复，假回复等情况皆判定为验证失败
