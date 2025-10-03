@@ -216,11 +216,11 @@ jobs:
             -X github.com/gucooing/BaPs/pkg.BaDataCommit=$BADATA_SHA" \
             -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
 
-#      - name: Upload artifact
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: BaPs_Gl-pr_lite_${{ needs.setenv.outputs.baps_sha }}_${{ needs.setenv.outputs.badata_sha }}_${{ matrix.target }}
-#          path: bin/*
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BaPs_Gl-pr_lite_${{ needs.setenv.outputs.baps_sha }}_${{ needs.setenv.outputs.badata_sha }}_${{ matrix.target }}
+          path: bin/*
 
   build-doker:
     needs:
