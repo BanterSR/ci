@@ -125,7 +125,7 @@ jobs:
 
       - name: Run GenExcelBin
         run: |
-          echo "BAPS_MODE_ENV=dev" >> $GITHUB_ENV
+          export BAPS_MODE_ENV=dev
           cd ./app/baps
           mkdir -m 775 ./data
           cp -r ${{github.workspace}}/app/src/data .
