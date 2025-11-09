@@ -69,9 +69,7 @@ jobs:
           
           echo "Building for $GOOS-$GOARCH..."
           GOOS=$GOOS GOARCH=$GOARCH \
-          go build -tags "lite" \
-            -ldflags="-s -w \
-            -o ./bin/$OUTPUT_NAME ./main.go
+          go build -ldflags="-s -w -o ./bin/$OUTPUT_NAME ./main.go
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
