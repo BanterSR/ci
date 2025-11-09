@@ -5,7 +5,7 @@ jobs:
   build:
     strategy:
       matrix:
-        plaform: [ubuntu-latest]
+        platform: [ubuntu-latest]
         target:
           - windows-amd64
           - windows-arm64
