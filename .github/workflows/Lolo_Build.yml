@@ -1,0 +1,79 @@
+name: Lolo_Build.yml
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    strategy:
+      matrix:
+        plaform: [ubuntu-latest]
+        target:
+          - windows-amd64
+          - windows-arm64
+          - linux-amd64
+          - linux-arm64
+          - darwin-amd64
+          - darwin-arm64
+          - linux-ppc64le
+          - linux-riscv64
+          - linux-s390x
+    name: Build Lolo
+    runs-on: ${{ matrix.platform }}
+    env:
+      TARGET: ${{ matrix.target }}
+    steps:
+      - name: Sync Lolo Src
+        uses: actions/checkout@v4
+        with:
+          repository: BanterSR/Lolo
+          ref: "main"
+          lfs: true
+          fetch-depth: 0
+          token: ${{ secrets.TOKEN }}
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.0"
+          check-latest: true
+      - name: Install protoc and protoc-gen-go
+        run: |
+          PROTOC_VERSION=32.0
+          curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
+          sudo unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /usr/local
+          sudo chmod +x /usr/local/bin/protoc
+          rm protoc-${PROTOC_VERSION}-linux-x86_64.zip
+
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          sudo mv $(go env GOPATH)/bin/protoc-gen-go /usr/local/bin/
+
+          protoc --version
+          protoc-gen-go --version
+
+      - name: Build Proto
+        run: |
+          cd ./protocol/proto
+          protoc --proto_path=. --go_out=. *.proto
+          cd ../excel
+          protoc --proto_path=. --go_out=. *.proto
+          cd ../config
+          protoc --proto_path=. --go_out=. *.proto
+      - name: Build
+        run: |
+          TARGET_SPLIT=(${TARGET//-/ })
+          GOOS=${TARGET_SPLIT[0]}
+          GOARCH=${TARGET_SPLIT[1]}
+          
+          OUTPUT_NAME="Lolo_"$GOOS"_"$GOARCH
+          if [ "$GOOS" = "windows" ]; then
+            OUTPUT_NAME="$OUTPUT_NAME.exe"
+          fi
+          
+          echo "Building for $GOOS-$GOARCH..."
+          GOOS=$GOOS GOARCH=$GOARCH \
+          go build -tags "lite" \
+            -ldflags="-s -w \
+            -o ./bin/$OUTPUT_NAME ./main.go
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lolo_${{ matrix.target }}
+          path: bin/*
