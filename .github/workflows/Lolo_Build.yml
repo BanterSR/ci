@@ -2,7 +2,27 @@ name: Lolo_Build.yml
 on:
   workflow_dispatch:
 jobs:
+  push-data:
+    name: push-data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync Lolo Src
+        uses: actions/checkout@v4
+        with:
+          repository: BanterSR/Lolo
+          ref: "main"
+          lfs: true
+          fetch-depth: 0
+          token: ${{ secrets.TOKEN }}
+      - name: Push Data
+        uses: actions/upload-artifact@v4
+        with:
+          name: data.zip
+          path: ./data/*
+
   build:
+    needs:
+      - push-data
     strategy:
       matrix:
         platform: [ubuntu-latest]
