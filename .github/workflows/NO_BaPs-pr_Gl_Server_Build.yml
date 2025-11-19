@@ -1,9 +1,9 @@
-name: BaPs-pr_Jp_Server_Build
+name: NO_BaPs-pr_Gl_Server_Build
 on:
   workflow_dispatch:
 
 #  repository_dispatch:
-#    types: [BaPs-pr-Jp-Push,BaData-Push]
+#    types: [BaPs-pr-Gl-Push,BaData-Push]
 
 jobs:
   setenv:
@@ -13,50 +13,50 @@ jobs:
       baps_sha: ${{ steps.baps-sha.outputs.sha }}
       badata_sha: ${{ steps.badata-sha.outputs.sha }}
     steps:
-    - name: Sync BaPs
-      uses: actions/checkout@v4
-      with:
-        repository: BanterSR/BaPs-pr
-        ref: "main"
-        path: ./app/src
-        lfs: false
-        fetch-depth: 0
-        clean: true
-        token: ${{ secrets.TOKEN }}
+      - name: Sync BaPs
+        uses: actions/checkout@v4
+        with:
+          repository: gucooing/BaPs_Gl-pr
+          ref: "main"
+          path: ./app/src
+          lfs: false
+          fetch-depth: 0
+          clean: true
+          token: ${{ secrets.TOKEN }}
 
-    - name: Sync BaData
-      uses: actions/checkout@v4
-      with:
-        repository: BanterSR/BaData
-        ref: "main"
-        path: ./app/baps/clientRes
-        lfs: false
-        fetch-depth: 0
-        clean: true
-        token: ${{ secrets.TOKEN }}
+      - name: Sync BaData
+        uses: actions/checkout@v4
+        with:
+          repository: BanterSR/BaData
+          ref: "main"
+          path: ./app/baps/clientRes
+          lfs: false
+          fetch-depth: 0
+          clean: true
+          token: ${{ secrets.TOKEN }}
 
-    - name: Set BaPs Env
-      id: baps-sha
-      run: |
-        SHA=$(git -C ./app/src rev-parse --short HEAD)
-        echo "BanterSR/BaPs-pr SHA: $SHA"
-        echo "sha=$SHA" >> $GITHUB_OUTPUT
+      - name: Set BaPs Env
+        id: baps-sha
+        run: |
+          SHA=$(git -C ./app/src rev-parse --short HEAD)
+          echo "gucooing/BaPs_Gl-pr SHA: $SHA"
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
 
-    - name: Set BaData Env
-      id: badata-sha
-      run: |
-        SHA=$(git -C ./app/baps/clientRes rev-parse --short HEAD)
-        echo "BanterSR/BaData SHA: $SHA"
-        echo "sha=$SHA" >> $GITHUB_OUTPUT
+      - name: Set BaData Env
+        id: badata-sha
+        run: |
+          SHA=$(git -C ./app/baps/clientRes rev-parse --short HEAD)
+          echo "BanterSR/BaData SHA: $SHA"
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
 
-    - name: Upload proto
-      uses: actions/upload-artifact@v4
-      with:
-        name: proto
-        path: |
-          ./app/src/common/server_only/bin.server.proto
-          ./app/src/common/server_only/enum.server.proto
-        compression-level: 0
+      - name: Upload proto
+        uses: actions/upload-artifact@v4
+        with:
+          name: proto
+          path: |
+            ./app/src/common/server_only/bin.server.proto
+            ./app/src/common/server_only/enum.server.proto
+          compression-level: 0
 
   upload-data:
     needs:
@@ -69,7 +69,7 @@ jobs:
       - name: Sync BaPs
         uses: actions/checkout@v4
         with:
-          repository: BanterSR/BaPs-pr
+          repository: gucooing/BaPs_Gl-pr
           ref: "main"
           path: ./app/src
           lfs: false
@@ -139,8 +139,8 @@ jobs:
 
   build:
     needs:
-     - setenv
-     - upload-data
+      - setenv
+      - upload-data
     strategy:
       matrix:
         platform: [ubuntu-latest]
@@ -161,72 +161,72 @@ jobs:
       BAPS_SHA: ${{ needs.setenv.outputs.baps_sha }}
       BADATA_SHA: ${{ needs.setenv.outputs.badata_sha }}
     steps:
-    - name: Sync BaPs
-      uses: actions/checkout@v4
-      with:
-        repository: BanterSR/BaPs-pr
-        ref: "main"
-        lfs: true
-        fetch-depth: 0
-        token: ${{ secrets.TOKEN }}
+      - name: Sync BaPs
+        uses: actions/checkout@v4
+        with:
+          repository: gucooing/BaPs_Gl-pr
+          ref: "main"
+          lfs: true
+          fetch-depth: 0
+          token: ${{ secrets.TOKEN }}
 
-    - uses: benjlevesque/short-sha@v3.0
-      id: short-sha
+      - uses: benjlevesque/short-sha@v3.0
+        id: short-sha
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: "1.25.1"
-        check-latest: true
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.1"
+          check-latest: true
 
-    - name: Install protoc and protoc-gen-go
-      run: |
-        PROTOC_VERSION=32.0
-        curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
-        sudo unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /usr/local
-        sudo chmod +x /usr/local/bin/protoc
-        rm protoc-${PROTOC_VERSION}-linux-x86_64.zip
-        
-        go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-        sudo mv $(go env GOPATH)/bin/protoc-gen-go /usr/local/bin/
-        
-        protoc --version
-        protoc-gen-go --version
+      - name: Install protoc and protoc-gen-go
+        run: |
+          PROTOC_VERSION=32.0
+          curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
+          sudo unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /usr/local
+          sudo chmod +x /usr/local/bin/protoc
+          rm protoc-${PROTOC_VERSION}-linux-x86_64.zip
+          
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          sudo mv $(go env GOPATH)/bin/protoc-gen-go /usr/local/bin/
+          
+          protoc --version
+          protoc-gen-go --version
 
-    - name: Build Proto
-      run: |
+      - name: Build Proto
+        run: |
           cd ./common/server_only
           protoc --proto_path=. --go_out=. *.proto
 
-    - name: Build
-      run: |
-        TARGET_SPLIT=(${TARGET//-/ })
-        GOOS=${TARGET_SPLIT[0]}
-        GOARCH=${TARGET_SPLIT[1]}
-        
-        OUTPUT_NAME="BaPs-pr_lite_"$GOOS"_"$GOARCH
-        if [ "$GOOS" = "windows" ]; then
-          OUTPUT_NAME="$OUTPUT_NAME.exe"
-        fi
-        
-        echo "Building for $GOOS-$GOARCH..."
-        GOOS=$GOOS GOARCH=$GOARCH \
-        go build -tags "lite" \
-          -ldflags="-s -w \
-          -X github.com/gucooing/BaPs/pkg.BaPsCommit=$BAPS_SHA \
-          -X github.com/gucooing/BaPs/pkg.BaDataCommit=$BADATA_SHA" \
-          -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
+      - name: Build
+        run: |
+          TARGET_SPLIT=(${TARGET//-/ })
+          GOOS=${TARGET_SPLIT[0]}
+          GOARCH=${TARGET_SPLIT[1]}
+          
+          OUTPUT_NAME="BaPs_Gl-pr_lite_"$GOOS"_"$GOARCH
+          if [ "$GOOS" = "windows" ]; then
+            OUTPUT_NAME="$OUTPUT_NAME.exe"
+          fi
+          
+          echo "Building for $GOOS-$GOARCH..."
+          GOOS=$GOOS GOARCH=$GOARCH \
+          go build -tags "lite" \
+            -ldflags="-s -w \
+            -X github.com/gucooing/BaPs/pkg.BaPsCommit=$BAPS_SHA \
+            -X github.com/gucooing/BaPs/pkg.BaDataCommit=$BADATA_SHA" \
+            -o ./bin/$OUTPUT_NAME ./cmd/BaPs/BaPs.go
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: BaPs-pr_lite_${{ needs.setenv.outputs.baps_sha }}_${{ needs.setenv.outputs.badata_sha }}_${{ matrix.target }}
-        path: bin/*
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BaPs_Gl-pr_lite_${{ needs.setenv.outputs.baps_sha }}_${{ needs.setenv.outputs.badata_sha }}_${{ matrix.target }}
+          path: bin/*
 
   build-doker:
     needs:
-     - setenv
-     - upload-data
+      - setenv
+      - upload-data
     name: BuildDockerImg
     env:
       BAPS_SHA: ${{ needs.setenv.outputs.baps_sha }}
@@ -236,7 +236,7 @@ jobs:
       - name: Sync BaPs
         uses: actions/checkout@v4
         with:
-          repository: BanterSR/BaPs-pr
+          repository: gucooing/BaPs_Gl-pr
           ref: "main"
           path: ./app/src
           lfs: false
@@ -288,4 +288,4 @@ jobs:
             BADATA_SHA=${{ needs.setenv.outputs.badata_sha }}
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/bantersr/baps-pr:latest
+          tags: ghcr.io/gucooing/baps-gl-pr:latest

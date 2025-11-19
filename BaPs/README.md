@@ -1,6 +1,8 @@
 ![introduce](https://socialify.git.ci/gucooing/BaPs/image?description=1&font=Source+Code+Pro&forks=1&issues=1&language=1&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Light)
 
-# BaPs-Lite 完全闭源的某游戏服务端实现 🎮
+# ⚠️⚠️⚠️该项目已永久停止维护更新⚠️⚠️⚠️
+
+## BaPs-Lite 完全闭源的某游戏服务端实现 🎮
 
 #### [English](README_EN.md)
 
@@ -8,7 +10,7 @@
 
 # 仅供学习用途，严禁用于商业用途，请于24小时内删除！！！
 
-> 🌟 现已停止维护更新由于是无状态设计,所以对内存的要求会略高
+> 🌟 由于是无状态设计,所以对内存的要求会略高
 
 > 📅 当前支持版本：Japan 1.61.372915 Global 1.82.376243
 
